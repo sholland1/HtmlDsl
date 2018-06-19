@@ -1,0 +1,54 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="$(TargetDir)HtmlDsl.dll" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="HtmlDsl" #>
+<#@ output extension=".g.cs" #>
+<#
+	IEnumerable<TagInfo> items =
+		File.ReadAllLines(this.Host.ResolvePath("Tags.csv"))
+			.Select(line => {
+				string[] arr = line.Split(',');
+				return new TagInfo {
+					Name = arr[0],
+					Type = arr[1].First(),
+					IsSingleton = Convert.ToBoolean(arr[2])
+				};
+			});
+#>
+using System;
+using System.Collections.Generic;
+using static HtmlDsl.HTMLHelpers;
+
+namespace HtmlDsl {
+	public static class Tags {
+<#
+foreach (var item in items) {
+	string tag = item.Type == 'o' ? "[Obsolete(\"Not Supported In Html5\")] " : "";
+#>
+		<#= tag #>public static TagElement _<#= item.Name #>() => new TagElement("<#= item.Name #>");
+
+		<#= tag #>public static TagElement _<#= item.Name #>(params (string, string)[] attrs) =>
+			new TagElement("<#= item.Name #>") { Attributes = attrs };
+
+<#
+	if (!item.IsSingleton) {
+#>
+		<#= tag #>public static TagElement _<#= item.Name #>(object obj) =>
+			new TagElement("<#= item.Name #>") { Children = _(_text(obj)) };
+
+		<#= tag #>public static TagElement _<#= item.Name #>(params IHtml[] children) =>
+			new TagElement("<#= item.Name #>") { Children = children };
+
+		<#= tag #>public static TagElement _<#= item.Name #>(IEnumerable<(string, string)> attrs, params IHtml[] children) =>
+			new TagElement("<#= item.Name #>") { Attributes = attrs, Children = children };
+
+<#
+    }
+}
+#>
+	}
+}
