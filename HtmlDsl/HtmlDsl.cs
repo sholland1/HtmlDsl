@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 
 namespace HtmlDsl {
@@ -62,11 +63,13 @@ namespace HtmlDsl {
         public static TagElement _tag(string name, IEnumerable<(string, string)> attrs, params IHtml[] children) =>
             new TagElement(name) { Attributes = attrs, Children = children };
 
-        public static TextElement _text(object obj) => new TextElement(obj.ToString());
+        public static TextElement _text(object obj) =>
+            new TextElement(WebUtility.HtmlEncode(obj.ToString()));
 
         public static CommentElement _comment() => new CommentElement();
 
-        public static CommentElement _comment(object content) => new CommentElement(content.ToString());
+        public static CommentElement _comment(object content) =>
+            new CommentElement(content.ToString().Replace("-->", "--\\>"));
     }
 	public class TagInfo {
 		public string Name { get; set; }

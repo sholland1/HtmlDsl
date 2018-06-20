@@ -1,5 +1,6 @@
 using FsCheck;
 using FsCheck.Xunit;
+using System.Net;
 using Xunit;
 using static HtmlDsl.HTMLHelpers;
 using static HtmlDsl.Tags;
@@ -14,7 +15,7 @@ namespace HtmlDsl.Tests {
         }
         [Property]
         public void tag_produces_a_tag_with_text(NonNull<string> s) {
-            var expected = $"<p>{s.Get}</p>";
+            var expected = $"<p>{WebUtility.HtmlEncode(s.Get)}</p>";
             Assert.Equal(expected, _p(s.Get).Render());
             Assert.Equal(expected, _tag("p", s.Get).Render());
         }
@@ -39,12 +40,12 @@ namespace HtmlDsl.Tests {
 
         [Property]
         public void text_produces_an_string(NonNull<string> s) {
-            Assert.Equal(s.Get, _text(s.Get).Render());
+            Assert.Equal(WebUtility.HtmlEncode(s.Get), _text(s.Get).Render());
         }
         [Property]
         public void text_produces_ToString_of_object(NonNull<string> s) {
             var x = new Foo(s.Get);
-            Assert.Equal(x.ToString(), _text(x).Render());
+            Assert.Equal(WebUtility.HtmlEncode(x.ToString()), _text(x).Render());
         }
         class Foo {
             private readonly string _value;
@@ -58,7 +59,7 @@ namespace HtmlDsl.Tests {
         }
         [Property]
         public void comment_produces_a_comment(NonNull<string> s) {
-            Assert.Equal($"<!--{s.Get}-->", _comment(s.Get).Render());
+            Assert.Equal($"<!--{s.Get.Replace("-->", "--\\>")}-->", _comment(s.Get).Render());
         }
     }
 }
