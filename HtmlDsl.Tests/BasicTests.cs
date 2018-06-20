@@ -34,5 +34,29 @@ namespace HtmlDsl.Tests {
             Assert.Equal(expected, _p(_(("foo", "bar")), _span(), _span()).Render());
             Assert.Equal(expected, _tag("p", _(("foo", "bar")), _tag("span"), _tag("span")).Render());
         }
+
+        [Fact]
+        public void text_produces_an_string() {
+            var s = "test";
+            Assert.Equal(s, _text(s).Render());
+        }
+        [Fact]
+        public void text_produces_ToString_of_object() {
+            var x = new Foo();
+            Assert.Equal(x.ToString(), _text(x).Render());
+        }
+        class Foo {
+            public override string ToString() => "foo";
+        }
+
+        [Fact]
+        public void empty_comment_produces_an_empty_comment() {
+            Assert.Equal("<!---->", _comment().Render());
+        }
+        [Fact]
+        public void comment_produces_a_comment() {
+            var s = "test";
+            Assert.Equal($"<!--{s}-->", _comment(s).Render());
+        }
     }
 }
