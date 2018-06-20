@@ -1,3 +1,5 @@
+using FsCheck;
+using FsCheck.Xunit;
 using Xunit;
 using static HtmlDsl.HTMLHelpers;
 using static HtmlDsl.Tags;
@@ -10,17 +12,17 @@ namespace HtmlDsl.Tests {
             Assert.Equal(expected, _p().Render());
             Assert.Equal(expected, _tag("p").Render());
         }
-        [Fact]
-        public void tag_produces_a_tag_with_text() {
-            var expected = "<p>test</p>";
-            Assert.Equal(expected, _p("test").Render());
-            Assert.Equal(expected, _tag("p", "test").Render());
+        [Property]
+        public void tag_produces_a_tag_with_text(NonNull<string> s) {
+            var expected = $"<p>{s.Get}</p>";
+            Assert.Equal(expected, _p(s.Get).Render());
+            Assert.Equal(expected, _tag("p", s.Get).Render());
         }
-        [Fact]
-        public void tag_produces_an_empty_tag_with_attrs() {
-            var expected = "<p foo=\"bar\" />";
-            Assert.Equal(expected, _p(("foo", "bar")).Render());
-            Assert.Equal(expected, _tag("p", ("foo", "bar")).Render());
+        [Property]
+        public void tag_produces_an_empty_tag_with_attrs(NonNull<string> name, NonNull<string> value) {
+            var expected = $"<p {name.Get}=\"{value.Get}\" />";
+            Assert.Equal(expected, _p((name.Get, value.Get)).Render());
+            Assert.Equal(expected, _tag("p", (name.Get, value.Get)).Render());
         }
         [Fact]
         public void tag_produces_a_tag_with_children() {
@@ -28,35 +30,35 @@ namespace HtmlDsl.Tests {
             Assert.Equal(expected, _p(_span(), _span()).Render());
             Assert.Equal(expected, _tag("p", _tag("span"), _tag("span")).Render());
         }
-        [Fact]
-        public void tag_produces_a_tag_and_attrs_with_children() {
-            var expected = "<p foo=\"bar\"><span /><span /></p>";
-            Assert.Equal(expected, _p(_(("foo", "bar")), _span(), _span()).Render());
-            Assert.Equal(expected, _tag("p", _(("foo", "bar")), _tag("span"), _tag("span")).Render());
+        [Property]
+        public void tag_produces_a_tag_and_attrs_with_children(NonNull<string> name, NonNull<string> value) {
+            var expected = $"<p {name.Get}=\"{value.Get}\"><span /><span /></p>";
+            Assert.Equal(expected, _p(_((name.Get, value.Get)), _span(), _span()).Render());
+            Assert.Equal(expected, _tag("p", _((name.Get, value.Get)), _tag("span"), _tag("span")).Render());
         }
 
-        [Fact]
-        public void text_produces_an_string() {
-            var s = "test";
-            Assert.Equal(s, _text(s).Render());
+        [Property]
+        public void text_produces_an_string(NonNull<string> s) {
+            Assert.Equal(s.Get, _text(s.Get).Render());
         }
-        [Fact]
-        public void text_produces_ToString_of_object() {
-            var x = new Foo();
+        [Property]
+        public void text_produces_ToString_of_object(NonNull<string> s) {
+            var x = new Foo(s.Get);
             Assert.Equal(x.ToString(), _text(x).Render());
         }
         class Foo {
-            public override string ToString() => "foo";
+            private readonly string _value;
+            public Foo(string val) => _value = val;
+            public override string ToString() => _value;
         }
 
         [Fact]
         public void empty_comment_produces_an_empty_comment() {
             Assert.Equal("<!---->", _comment().Render());
         }
-        [Fact]
-        public void comment_produces_a_comment() {
-            var s = "test";
-            Assert.Equal($"<!--{s}-->", _comment(s).Render());
+        [Property]
+        public void comment_produces_a_comment(NonNull<string> s) {
+            Assert.Equal($"<!--{s.Get}-->", _comment(s.Get).Render());
         }
     }
 }
