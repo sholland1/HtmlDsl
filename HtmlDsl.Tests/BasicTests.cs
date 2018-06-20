@@ -20,6 +20,13 @@ namespace HtmlDsl.Tests {
             Assert.Equal(expected, _tag("p", s.Get).Render());
         }
         [Property]
+        public void tag_produces_a_tag_with_object(NonNull<string> s) {
+            var expected = $"<p>{WebUtility.HtmlEncode(s.Get)}</p>";
+            var x = new Foo(s.Get);
+            Assert.Equal(expected, _p(x).Render());
+            Assert.Equal(expected, _tag("p", x).Render());
+        }
+        [Property]
         public void tag_produces_an_empty_tag_with_attrs(NonNull<string> name, NonNull<string> value) {
             var expected = $"<p {name.Get}=\"{value.Get}\" />";
             Assert.Equal(expected, _p((name.Get, value.Get)).Render());
@@ -38,6 +45,10 @@ namespace HtmlDsl.Tests {
             Assert.Equal(expected, _tag("p", _((name.Get, value.Get)), _tag("span"), _tag("span")).Render());
         }
 
+        [Fact(Skip = "just checking for compile")]
+        public void implicit_conversion_compiles() {
+            _p(_span(), "test");
+        }
         [Property]
         public void text_produces_an_string(NonNull<string> s) {
             Assert.Equal(WebUtility.HtmlEncode(s.Get), _text(s.Get).Render());

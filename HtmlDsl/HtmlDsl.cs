@@ -4,16 +4,17 @@ using System.Net;
 using System.Text;
 
 namespace HtmlDsl {
-    public interface IHtml {
-        string Render();
-        StringBuilder RenderSB(StringBuilder sb);
+    public abstract class IHtml {
+        public abstract string Render();
+        public abstract StringBuilder RenderSB(StringBuilder sb);
+        public static implicit operator IHtml(string text) => new TextElement(text);
     }
     public class TextElement : IHtml {
-        public TextElement(string text) => Text = text;
+        public TextElement(string text) => Text = WebUtility.HtmlEncode(text);
         public string Text { get; }
 
-        public string Render() => Text;
-        public StringBuilder RenderSB(StringBuilder sb) => sb.Append(Text);
+        public override string Render() => Text;
+        public override StringBuilder RenderSB(StringBuilder sb) => sb.Append(Text);
     }
     public class TagElement : IHtml {
         public TagElement(string name) => Name = name;
@@ -22,9 +23,9 @@ namespace HtmlDsl {
         public IEnumerable<(string name, string value)> Attributes { get; set; } = HTMLHelpers._<(string, string)>();
         public IEnumerable<IHtml> Children { get; set; } = HTMLHelpers._<IHtml>();
 
-        public string Render() => RenderSB(new StringBuilder()).ToString();
+        public override string Render() => RenderSB(new StringBuilder()).ToString();
 
-        public StringBuilder RenderSB(StringBuilder sb) {
+        public override StringBuilder RenderSB(StringBuilder sb) {
             var attrs = Attributes.Aggregate(
                 sb.Append($"<{Name}"),
                 (acc, t) => acc
@@ -43,8 +44,8 @@ namespace HtmlDsl {
 
         public string Content { get; set; }
 
-        public string Render() => RenderSB(new StringBuilder()).ToString();
-        public StringBuilder RenderSB(StringBuilder sb) => sb.Append($"<!--{Content}-->");
+        public override string Render() => RenderSB(new StringBuilder()).ToString();
+        public override StringBuilder RenderSB(StringBuilder sb) => sb.Append($"<!--{Content}-->");
     }
     public static class HTMLHelpers {
         public static T[] _<T>(params T[] ts) => ts;
@@ -64,7 +65,7 @@ namespace HtmlDsl {
             new TagElement(name) { Attributes = attrs, Children = children };
 
         public static TextElement _text(object obj) =>
-            new TextElement(WebUtility.HtmlEncode(obj.ToString()));
+            new TextElement(obj.ToString());
 
         public static CommentElement _comment() => new CommentElement();
 
