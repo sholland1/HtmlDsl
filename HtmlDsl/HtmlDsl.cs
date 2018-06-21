@@ -5,7 +5,7 @@ using System.Text;
 
 namespace HtmlDsl {
     public abstract class IHtml {
-        public abstract string Render();
+        public virtual string Render() => RenderSB(new StringBuilder()).ToString();
         public abstract StringBuilder RenderSB(StringBuilder sb);
         public static implicit operator IHtml(string text) => new TextElement(text);
     }
@@ -22,8 +22,6 @@ namespace HtmlDsl {
         public string Name { get; set; }
         public IEnumerable<(string name, string value)> Attributes { get; set; } = new(string, string)[] { };
         public IEnumerable<IHtml> Children { get; set; } = new IHtml[] { };
-
-        public override string Render() => RenderSB(new StringBuilder()).ToString();
 
         public override StringBuilder RenderSB(StringBuilder sb) {
             var attrs = Attributes.Aggregate(
@@ -44,8 +42,15 @@ namespace HtmlDsl {
 
         public string Content { get; set; }
 
-        public override string Render() => RenderSB(new StringBuilder()).ToString();
         public override StringBuilder RenderSB(StringBuilder sb) => sb.Append($"<!--{Content}-->");
+    }
+    public class RawHtml : IHtml {
+        public RawHtml(string content) => Content = content;
+
+        public string Content { get; set; }
+
+        public override string Render() => Content;
+        public override StringBuilder RenderSB(StringBuilder sb) => sb.Append(Content);
     }
     public static class HTMLHelpers {
         public delegate B ParamsFunc<A, B>(params A[] ps);
@@ -69,6 +74,8 @@ namespace HtmlDsl {
 
         public static CommentElement _comment(object content) =>
             new CommentElement(content.ToString().Replace("-->", "--\\>"));
+
+        public static RawHtml _raw(string s) => new RawHtml(s);
     }
 	public class TagInfo {
 		public string Name { get; set; }
