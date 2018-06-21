@@ -29,8 +29,8 @@ namespace HtmlDsl.Tests {
         [Property]
         public void tag_produces_an_empty_tag_with_attrs(NonNull<string> name, NonNull<string> value) {
             var expected = $"<p {name.Get}=\"{value.Get}\" />";
-            Assert.Equal(expected, _p((name.Get, value.Get)).Render());
-            Assert.Equal(expected, _tag("p", (name.Get, value.Get)).Render());
+            Assert.Equal(expected, _p((name.Get, value.Get))().Render());
+            Assert.Equal(expected, _tag("p", (name.Get, value.Get))().Render());
         }
         [Fact]
         public void tag_produces_a_tag_with_children() {
@@ -41,8 +41,8 @@ namespace HtmlDsl.Tests {
         [Property]
         public void tag_produces_a_tag_and_attrs_with_children(NonNull<string> name, NonNull<string> value) {
             var expected = $"<p {name.Get}=\"{value.Get}\"><span /><span /></p>";
-            Assert.Equal(expected, _p(_((name.Get, value.Get)), _span(), _span()).Render());
-            Assert.Equal(expected, _tag("p", _((name.Get, value.Get)), _tag("span"), _tag("span")).Render());
+            Assert.Equal(expected, _p((name.Get, value.Get))(_span(), _span()).Render());
+            Assert.Equal(expected, _tag("p", (name.Get, value.Get))(_tag("span"), _tag("span")).Render());
         }
 
         [Fact(Skip = "just checking for compile")]

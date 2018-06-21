@@ -20,8 +20,8 @@ namespace HtmlDsl {
         public TagElement(string name) => Name = name;
 
         public string Name { get; set; }
-        public IEnumerable<(string name, string value)> Attributes { get; set; } = HTMLHelpers._<(string, string)>();
-        public IEnumerable<IHtml> Children { get; set; } = HTMLHelpers._<IHtml>();
+        public IEnumerable<(string name, string value)> Attributes { get; set; } = new(string, string)[] { };
+        public IEnumerable<IHtml> Children { get; set; } = new IHtml[] { };
 
         public override string Render() => RenderSB(new StringBuilder()).ToString();
 
@@ -48,21 +48,19 @@ namespace HtmlDsl {
         public override StringBuilder RenderSB(StringBuilder sb) => sb.Append($"<!--{Content}-->");
     }
     public static class HTMLHelpers {
-        public static T[] _<T>(params T[] ts) => ts;
+        public delegate B ParamsFunc<A, B>(params A[] ps);
 
         public static TagElement _tag(string name) => new TagElement(name);
 
         public static TagElement _tag(string name, object obj) =>
-            new TagElement(name) { Children = _(_text(obj)) };
-
-        public static TagElement _tag(string name, params (string, string)[] attrs) =>
-            new TagElement(name) { Attributes = attrs };
+            new TagElement(name) { Children = new[] { _text(obj) } };
 
         public static TagElement _tag(string name, params IHtml[] children) =>
             new TagElement(name) { Children = children };
 
-        public static TagElement _tag(string name, IEnumerable<(string, string)> attrs, params IHtml[] children) =>
-            new TagElement(name) { Attributes = attrs, Children = children };
+		public static ParamsFunc<IHtml, TagElement> _tag(string name, params (string, string)[] attrs) =>
+            new ParamsFunc<IHtml, TagElement>(
+                children => new TagElement(name) { Attributes = attrs, Children = children });
 
         public static TextElement _text(object obj) =>
             new TextElement(obj.ToString());
