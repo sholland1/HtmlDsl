@@ -30,18 +30,25 @@ foreach (var item in items) {
 #>
         <#= tag #>public static TagElement _<#= item.Name #>() => new TagElement("<#= item.Name #>");
 
-        <#= tag #>public static ParamsFunc<IHtml, TagElement> _<#= item.Name #>(params (string, string)[] attrs) =>
-            new ParamsFunc<IHtml, TagElement>(
-                children => new TagElement("<#= item.Name #>") { Attributes = attrs, Children = children });
+<#
+    if (item.IsSingleton) {
+#>
+		<#= tag #>public static TagElement _<#= item.Name #>(params (string, string)[] attrs) =>
+			new TagElement("<#= item.Name #>") { Attributes = attrs };
 
 <#
-    if (!item.IsSingleton) {
+    }
+    else {
 #>
         <#= tag #>public static TagElement _<#= item.Name #>(object obj) =>
             new TagElement("<#= item.Name #>") { Children = new[] { _text(obj) } };
 
         <#= tag #>public static TagElement _<#= item.Name #>(params IHtml[] children) =>
             new TagElement("<#= item.Name #>") { Children = children };
+
+        <#= tag #>public static ParamsFunc<IHtml, TagElement> _<#= item.Name #>(params (string, string)[] attrs) =>
+            new ParamsFunc<IHtml, TagElement>(
+                children => new TagElement("<#= item.Name #>") { Attributes = attrs, Children = children });
 
 <#
     }
