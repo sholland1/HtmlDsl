@@ -28,26 +28,26 @@ namespace HtmlDsl {
 foreach (var item in items) {
     string tag = item.Type == 'o' ? "[Obsolete(\"Not Supported In Html5\")] " : "";
 #>
-        <#= tag #>public static TagElement _<#= item.Name #>() => new TagElement("<#= item.Name #>");
+        <#= tag #>public static IHtml _<#= item.Name #>() => new TagElement("<#= item.Name #>");
 
 <#
     if (item.IsSingleton) {
 #>
-        <#= tag #>public static TagElement _<#= item.Name #>(params (string, string)[] attrs) =>
+        <#= tag #>public static IHtml _<#= item.Name #>(params (string, string)[] attrs) =>
             new TagElement("<#= item.Name #>") { Attributes = attrs };
 
 <#
     }
     else {
 #>
-        <#= tag #>public static TagElement _<#= item.Name #>(object obj) =>
+        <#= tag #>public static IHtml _<#= item.Name #>(object obj) =>
             new TagElement("<#= item.Name #>") { Children = new[] { _text(obj) } };
 
-        <#= tag #>public static TagElement _<#= item.Name #>(params IHtml[] children) =>
+        <#= tag #>public static IHtml _<#= item.Name #>(params IHtml[] children) =>
             new TagElement("<#= item.Name #>") { Children = children };
 
-        <#= tag #>public static ParamsFunc<IHtml, TagElement> _<#= item.Name #>(params (string, string)[] attrs) =>
-            new ParamsFunc<IHtml, TagElement>(
+        <#= tag #>public static ParamsFunc<IHtml, IHtml> _<#= item.Name #>(params (string, string)[] attrs) =>
+            new ParamsFunc<IHtml, IHtml>(
                 children => new TagElement("<#= item.Name #>") { Attributes = attrs, Children = children });
 
 <#
