@@ -24,14 +24,13 @@ namespace HtmlDsl {
         public IEnumerable<IHtml> Children { get; set; } = new IHtml[] { };
 
         public override StringBuilder RenderSB(StringBuilder sb) {
-            var attrs = Attributes.Aggregate(
-                sb.Append($"<{Name}"),
-                (acc, t) => acc
-                    .Append($" {t.name}=\"{t.value}\""));
+            var attrs = Attributes
+                .Aggregate(sb.Append($"<{Name}"),
+                           (acc, t) => acc.Append($" {t.name}=\"{t.value}\""));
             return Children.Any()
-                ? Children.Aggregate(
-                    attrs.Append(">"),
-                    (acc, h) => h.RenderSB(acc))
+                ? Children
+                    .Aggregate(attrs.Append(">"),
+                               (acc, h) => h.RenderSB(acc))
                     .Append($"</{Name}>")
                 : attrs.Append(" />");
         }
