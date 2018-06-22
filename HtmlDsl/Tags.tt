@@ -33,8 +33,8 @@ foreach (var item in items) {
 <#
     if (item.IsSingleton) {
 #>
-		<#= tag #>public static TagElement _<#= item.Name #>(params (string, string)[] attrs) =>
-			new TagElement("<#= item.Name #>") { Attributes = attrs };
+        <#= tag #>public static TagElement _<#= item.Name #>(params (string, string)[] attrs) =>
+            new TagElement("<#= item.Name #>") { Attributes = attrs };
 
 <#
     }

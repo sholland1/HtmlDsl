@@ -63,7 +63,7 @@ namespace HtmlDsl {
         public static TagElement _tag(string name, params IHtml[] children) =>
             new TagElement(name) { Children = children };
 
-		public static ParamsFunc<IHtml, TagElement> _tag(string name, params (string, string)[] attrs) =>
+        public static ParamsFunc<IHtml, TagElement> _tag(string name, params (string, string)[] attrs) =>
             new ParamsFunc<IHtml, TagElement>(
                 children => new TagElement(name) { Attributes = attrs, Children = children });
 
@@ -77,9 +77,9 @@ namespace HtmlDsl {
 
         public static RawHtml _raw(string s) => new RawHtml(s);
     }
-	public class TagInfo {
-		public string Name { get; set; }
-		public char Type { get; set; }
+    public class TagInfo {
+        public string Name { get; set; }
+        public char Type { get; set; }
         public bool IsSingleton { get; set; }
-	}
+    }
 }
