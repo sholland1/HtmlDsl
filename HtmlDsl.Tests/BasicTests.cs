@@ -2,7 +2,7 @@ using FsCheck;
 using FsCheck.Xunit;
 using System.Net;
 using Xunit;
-using static HtmlDsl.HTMLHelpers;
+using static HtmlDsl.HTMLUtils;
 using static HtmlDsl.Tags;
 
 namespace HtmlDsl.Tests {

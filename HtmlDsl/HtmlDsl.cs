@@ -51,7 +51,7 @@ namespace HtmlDsl {
         public override string Render() => Content;
         public override StringBuilder RenderSB(StringBuilder sb) => sb.Append(Content);
     }
-    public static class HTMLHelpers {
+    public static class HTMLUtils {
         public delegate B ParamsFunc<A, B>(params A[] ps);
 
         public static IHtml _tag(string name) => new TagElement(name);
@@ -63,14 +63,7 @@ namespace HtmlDsl {
             new ParamsFunc<IHtml, IHtml>(
                 children => new TagElement(name) { Attributes = attrs, Children = children });
 
-        public static IHtml _text(object obj) =>
-            new TextElement(obj.ToString());
 
-        public static IHtml _comment() => new CommentElement();
 
-        public static IHtml _comment(object content) =>
-            new CommentElement(content.ToString().Replace("-->", "--\\>"));
-
-        public static IHtml _raw(string s) => new RawHtml(s);
     }
 }

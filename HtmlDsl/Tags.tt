@@ -20,10 +20,20 @@
             });
 #>
 using System;
-using static HtmlDsl.HTMLHelpers;
+using static HtmlDsl.HTMLUtils;
 
 namespace HtmlDsl {
     public static class Tags {
+        public static IHtml _text(object obj) =>
+            new TextElement(obj.ToString());
+
+        public static IHtml _comment() => new CommentElement();
+
+        public static IHtml _comment(object content) =>
+            new CommentElement(content.ToString().Replace("-->", "--\\>"));
+
+        public static IHtml _raw(string s) => new RawHtml(s);
+
 <#
 foreach (var item in items) {
     string tag = item.Type == 'o' ? "[Obsolete(\"Not Supported In Html5\")] " : "";
