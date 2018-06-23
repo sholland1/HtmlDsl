@@ -40,9 +40,6 @@ foreach (var item in items) {
     }
     else {
 #>
-        <#= tag #>public static IHtml _<#= item.Name #>(object obj) =>
-            new TagElement("<#= item.Name #>") { Children = new[] { _text(obj) } };
-
         <#= tag #>public static IHtml _<#= item.Name #>(params IHtml[] children) =>
             new TagElement("<#= item.Name #>") { Children = children };
 
@@ -56,3 +53,10 @@ foreach (var item in items) {
 #>
     }
 }
+<#+
+	class TagInfo {
+		public string Name { get; set; }
+		public char Type { get; set; }
+		public bool IsSingleton { get; set; }
+	}
+#>

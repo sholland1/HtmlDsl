@@ -56,9 +56,6 @@ namespace HtmlDsl {
 
         public static IHtml _tag(string name) => new TagElement(name);
 
-        public static IHtml _tag(string name, object obj) =>
-            new TagElement(name) { Children = new[] { _text(obj) } };
-
         public static IHtml _tag(string name, params IHtml[] children) =>
             new TagElement(name) { Children = children };
 
@@ -75,10 +72,5 @@ namespace HtmlDsl {
             new CommentElement(content.ToString().Replace("-->", "--\\>"));
 
         public static IHtml _raw(string s) => new RawHtml(s);
-    }
-    internal class TagInfo {
-        public string Name { get; set; }
-        public char Type { get; set; }
-        public bool IsSingleton { get; set; }
     }
 }
