@@ -1,0 +1,50 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="$(TargetDir)HtmlDsl.dll" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="HtmlDsl" #>
+<#@ output extension=".g.cs" #>
+<#
+    IEnumerable<AttrInfo> items =
+        File.ReadAllLines(this.Host.ResolvePath("Attrs.csv"))
+            .Select(line => {
+                string[] arr = line.Split(',');
+                return new AttrInfo {
+                    Name = arr[0],
+                    Type = arr[1],
+                    Status = arr[2].First(),
+                    Conversion = arr[3]
+                };
+            });
+#>
+using System;
+using static HtmlDsl.HTMLUtils;
+
+namespace HtmlDsl {
+    public static class Attrs {
+        private static string Delimit(int[] values) => string.Join(",", values);
+
+<#
+foreach (var item in items) {
+    string obsolete = item.Status == 'o' ? "[Obsolete(\"Not Supported In Html5\")] " : "";
+
+#>
+        <#= obsolete #>public static IAttr _<#= item.Name #>(<#= item.Type #> value<#= item.Type == "bool" ? " = true" : "" #>) =>
+            _attr("<#= item.Name #>", <#= item.Conversion #>);
+
+<#
+}
+#>
+    }
+}
+<#+
+	class AttrInfo {
+		public string Name { get; set; }
+		public string Type { get; set; }
+		public char Status { get; set; }
+		public string Conversion { get; set; }
+	}
+#>

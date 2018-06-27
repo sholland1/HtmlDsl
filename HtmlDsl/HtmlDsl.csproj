@@ -1,16 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
-
   <ItemGroup>
+    <Compile Update="Attrs.g.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Attrs.tt</DependentUpon>
+    </Compile>
     <Compile Update="Tags.g.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -18,8 +21,11 @@
     </Compile>
   </ItemGroup>
 
-
   <ItemGroup>
+    <None Update="Attrs.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Attrs.g.cs</LastGenOutput>
+    </None>
     <None Update="Tags.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Tags.g.cs</LastGenOutput>

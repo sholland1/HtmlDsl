@@ -14,7 +14,7 @@
                 string[] arr = line.Split(',');
                 return new TagInfo {
                     Name = arr[0],
-                    Type = arr[1].First(),
+                    Status = arr[1].First(),
                     IsSingleton = Convert.ToBoolean(arr[2])
                 };
             });
@@ -36,14 +36,14 @@ namespace HtmlDsl {
 
 <#
 foreach (var item in items) {
-    string obsolete = item.Type == 'o' ? "[Obsolete(\"Not Supported In Html5\")] " : "";
+    string obsolete = item.Status == 'o' ? "[Obsolete(\"Not Supported In Html5\")] " : "";
 #>
         <#= obsolete #>public static IHtml _<#= item.Name #>() => new TagElement("<#= item.Name #>");
 
 <#
     if (item.IsSingleton) {
 #>
-        <#= obsolete #>public static IHtml _<#= item.Name #>(params (string, string)[] attrs) =>
+        <#= obsolete #>public static IHtml _<#= item.Name #>(params IAttr[] attrs) =>
             new TagElement("<#= item.Name #>") { Attributes = attrs };
 
 <#
@@ -53,7 +53,7 @@ foreach (var item in items) {
         <#= obsolete #>public static IHtml _<#= item.Name #>(params IHtml[] children) =>
             new TagElement("<#= item.Name #>") { Children = children };
 
-        <#= obsolete #>public static ParamsFunc<IHtml, IHtml> _<#= item.Name #>(params (string, string)[] attrs) =>
+        <#= obsolete #>public static ParamsFunc<IHtml, IHtml> _<#= item.Name #>(params IAttr[] attrs) =>
             new ParamsFunc<IHtml, IHtml>(
                 children => new TagElement("<#= item.Name #>") { Attributes = attrs, Children = children });
 
@@ -66,7 +66,7 @@ foreach (var item in items) {
 <#+
 	class TagInfo {
 		public string Name { get; set; }
-		public char Type { get; set; }
+		public char Status { get; set; }
 		public bool IsSingleton { get; set; }
 	}
 #>
