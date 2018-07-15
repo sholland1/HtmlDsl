@@ -35,7 +35,7 @@ foreach (var item in items) {
     string obsolete = item.Status == 'o' ? "[Obsolete(\"Not Supported In Html5\")] " : "";
 
 #>
-        <#= obsolete #>public static IAttr _<#= item.Name #>(<#= item.Type #> value<#= item.Type == "bool" ? " = true" : "" #>) =>
+        <#= obsolete #>public static IAttr _<#= item.Name.Replace('-', '_') #>(<#= item.Type #> value<#= item.Type == "bool" ? " = true" : "" #>) =>
             _attr("<#= item.Name #>", <#= item.Conversion #>);
 
 <#

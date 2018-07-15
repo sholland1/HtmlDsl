@@ -30,7 +30,7 @@ namespace HtmlDsl.Tests {
         [Property]
         public void tag_produces_an_empty_tag_with_attrs(NonNull<string> value) {
             var expected = $"<p id=\"{value.Get}\" hidden dir=\"rtl\" />";
-            Assert.Equal(expected, _p(_id(value.Get), _hidden(), _dir(TextDir.rtl))().Render());
+            Assert.Equal(expected, _p(_id(value.Get), _hidden(), TextDir.rtl)().Render());
             Assert.Equal(expected, _tag("p", _attr("id", value.Get), _attr("hidden", true), _attr("dir", TextDir.rtl.ToString()))().Render());
         }
         [Fact]

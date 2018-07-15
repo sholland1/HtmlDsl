@@ -1,12 +1,12 @@
 ﻿accept,string,5,value
-accept_charset,string,5,value
+accept-charset,string,5,value
 accesskey,char,5,value.ToString()
 action,Uri,5,value.ToString()
 align,Align,o,value.ToString()
 align,string,o,value
 alt,string,5,value
 async,bool,5,value
-autocapitalize,Capitalize,5,value.ToString()
+autocapitalize,Autocapitalize,5,value.ToString()
 autocomplete,bool,5,value
 autofocus,bool,5,value
 autoplay,bool,5,value
@@ -50,7 +50,7 @@ hidden,bool,5,value
 high,int,5,value.ToString()
 href,Uri,5,value.ToString()
 hreflang,string,5,value
-http_equiv,HttpEquiv,5,value.ToString()
+http-equiv,HttpEquiv,5,value.ToString()
 icon,Uri,5,value.ToString()
 id,string,5,value
 integrity,string,5,value

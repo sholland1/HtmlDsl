@@ -51,7 +51,7 @@ namespace HtmlDsl {
         public override string Render() => Content;
         public override StringBuilder RenderSB(StringBuilder sb) => sb.Append(Content);
     }
-    public abstract class IAttr {
+    public abstract partial class IAttr {
         public abstract string Render();
         public static implicit operator IAttr((string name, string value) t) =>
             new StandardAttr(t.name, t.value);
