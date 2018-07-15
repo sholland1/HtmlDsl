@@ -1,6 +1,9 @@
 ﻿using System;
 
 namespace HtmlDsl {
+    public enum Align {
+        left, right, center, justify
+    }
     public enum Capitalize {
         off, none, on, sentences, words, characters
     }
@@ -43,5 +46,8 @@ namespace HtmlDsl {
     }
     public enum TextWrap {
         hard, soft, off
+    }
+    public enum Valign {
+        top, middle, bottom, baseline
     }
 }

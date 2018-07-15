@@ -26,6 +26,9 @@ using static HtmlDsl.HTMLUtils;
 namespace HtmlDsl {
     public static class Attrs {
         private static string Delimit(int[] values) => string.Join(",", values);
+        private static string FormatColor(System.Drawing.Color value) => $"#{value.R:x2}{value.B:x2}{value.G:x2}";
+        private static string FormatDateTime(DateTime value) => value.ToString("o");
+        private static string FormatTimeSpan(TimeSpan value) => value.ToString(@"d\dh\hm\ms\.fffffff\s");
 
 <#
 foreach (var item in items) {
